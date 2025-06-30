@@ -141,8 +141,11 @@ The analysis reveals significant chromatin remodeling in drug-resistant cells:
 ## Citation
 
 If you use this pipeline, please cite:
-- Original study: [Insert publication details]
-- This pipeline: [Your repository URL]
+- Original study:
+  
+Oatman N, Dasgupta N, Arora P, Choi K, Gawali MV, Gupta N, Parameswaran S, Salomone J, Reisz JA, Lawler S, Furnari F, Brennan C, Wu J, Sallans L, Gudelsky G, Desai P, Gebelein B, Weirauch MT, D'Alessandro A, Komurov K, Dasgupta B. Mechanisms of stearoyl CoA desaturase inhibitor sensitivity and acquired resistance in cancer. Sci Adv. 2021 Feb 10;7(7):eabd7459. doi: 10.1126/sciadv.abd7459. PMID: 33568479; PMCID: PMC7875532.
+
+- This pipeline: Roman A. Caceres (Cacerera@mail.uc.edu)
 
 ## License
 
@@ -150,4 +153,4 @@ MIT License - see LICENSE file for details
 
 ## Contact
 
-For questions or issues, please open an issue on GitHub or contact [your email].
+For questions or issues, please open an issue on GitHub or contact Roman A. Caceres (Cacerera@mail.uc.edu).
