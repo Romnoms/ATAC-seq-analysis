@@ -1,0 +1,524 @@
+---
+title: "ATAC-seq Analysis Pipeline"
+subtitle: "Chromatin Accessibility Analysis - GSE130638"
+author: "ATAC-seq Analysis Pipeline"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    code_folding: show
+    theme: flatly
+    highlight: tango
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 8,
+  cache = FALSE
+)
+
+# Set seed for reproducibility
+set.seed(42)
+```
+
+# Overview
+
+This notebook provides a comprehensive analysis of ATAC-seq data comparing parental (G82) and drug-resistant (G82R) cancer cells.
+
+**Key objectives:**
+
+1. Load and process ATAC-seq peak data
+2. Perform quality control analysis
+3. Identify differential chromatin accessibility
+4. Annotate peaks to genomic features
+5. Perform functional enrichment analysis
+6. Generate publication-quality visualizations
+
+# Environment Setup
+
+## Load Required Libraries
+
+```{r load-libraries}
+# Core packages
+library(tidyverse)
+library(data.table)
+
+# Genomics packages
+library(GenomicRanges)
+library(rtracklayer)
+library(ChIPseeker)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(org.Hs.eg.db)
+
+# Visualization
+library(ggplot2)
+library(pheatmap)
+library(RColorBrewer)
+library(ComplexHeatmap)
+library(circlize)
+
+# Statistical analysis
+library(DESeq2)
+library(edgeR)
+
+# Set theme
+theme_set(theme_minimal(base_size = 12))
+```
+
+# Data Loading
+
+## Load Peak Files
+
+```{r load-data}
+# Define file paths
+g82_file <- "../data/GSM3746025_G82.bed.gz"
+g82r_file <- "../data/GSM3746026_G82R.bed.gz"
+
+# Function to read MACS2 narrowPeak format
+read_narrowPeak <- function(file) {
+  cols <- c("chr", "start", "end", "name", "score", 
+            "strand", "signalValue", "pValue", "qValue", "peak")
+  
+  peaks <- fread(file, sep = "\t", col.names = cols)
+  
+  # Add calculated columns
+  peaks <- peaks %>%
+    mutate(
+      width = end - start,
+      center = start + as.integer(width / 2),
+      log10_pValue = pValue,
+      log10_qValue = qValue
+    )
+  
+  return(peaks)
+}
+
+# Load peak data
+cat("Loading G82 (parental) peaks...\n")
+g82_peaks <- read_narrowPeak(g82_file)
+cat("Loaded", nrow(g82_peaks), "peaks\n\n")
+
+cat("Loading G82R (resistant) peaks...\n")
+g82r_peaks <- read_narrowPeak(g82r_file)
+cat("Loaded", nrow(g82r_peaks), "peaks\n")
+```
+
+## Convert to GRanges
+
+```{r convert-granges}
+# Convert to GRanges objects for genomic operations
+g82_gr <- GRanges(
+  seqnames = g82_peaks$chr,
+  ranges = IRanges(start = g82_peaks$start, end = g82_peaks$end),
+  strand = "*",
+  score = g82_peaks$score,
+  signalValue = g82_peaks$signalValue,
+  pValue = g82_peaks$pValue,
+  qValue = g82_peaks$qValue
+)
+
+g82r_gr <- GRanges(
+  seqnames = g82r_peaks$chr,
+  ranges = IRanges(start = g82r_peaks$start, end = g82r_peaks$end),
+  strand = "*",
+  score = g82r_peaks$score,
+  signalValue = g82r_peaks$signalValue,
+  pValue = g82r_peaks$pValue,
+  qValue = g82r_peaks$qValue
+)
+
+# Add sample metadata
+mcols(g82_gr)$sample <- "G82"
+mcols(g82r_gr)$sample <- "G82R"
+```
+
+# Quality Control
+
+## Peak Statistics Summary
+
+```{r peak-stats}
+# Create summary statistics
+peak_stats <- data.frame(
+  Sample = c("G82 (Parental)", "G82R (Resistant)"),
+  Total_Peaks = c(length(g82_gr), length(g82r_gr)),
+  Mean_Width = c(mean(width(g82_gr)), mean(width(g82r_gr))),
+  Median_Width = c(median(width(g82_gr)), median(width(g82r_gr))),
+  Mean_Score = c(mean(g82_peaks$score), mean(g82r_peaks$score)),
+  Mean_Signal = c(mean(g82_peaks$signalValue), mean(g82r_peaks$signalValue))
+) %>%
+  mutate(
+    Mean_Width = round(Mean_Width, 1),
+    Median_Width = round(Median_Width, 0),
+    Mean_Score = round(Mean_Score, 1),
+    Mean_Signal = round(Mean_Signal, 1)
+  )
+
+# Display table
+knitr::kable(peak_stats, caption = "Summary Statistics of ATAC-seq Peaks")
+```
+
+## Peak Width Distribution
+
+```{r peak-width-dist, fig.height=6}
+# Combine peak width data
+width_data <- rbind(
+  data.frame(Sample = "G82", Width = width(g82_gr)),
+  data.frame(Sample = "G82R", Width = width(g82r_gr))
+)
+
+# Create violin plot
+ggplot(width_data, aes(x = Sample, y = Width, fill = Sample)) +
+  geom_violin(alpha = 0.7, scale = "width") +
+  geom_boxplot(width = 0.2, fill = "white", alpha = 0.8) +
+  scale_fill_manual(values = c("G82" = "#3498db", "G82R" = "#e74c3c")) +
+  scale_y_log10(breaks = c(100, 200, 500, 1000, 2000, 5000)) +
+  labs(
+    title = "Peak Width Distribution",
+    subtitle = "ATAC-seq peak widths on log scale",
+    x = "Sample",
+    y = "Peak Width (bp)"
+  ) +
+  theme(legend.position = "none")
+```
+
+## Chromosome Distribution
+
+```{r chr-distribution, fig.height=8}
+# Count peaks per chromosome
+chr_counts <- rbind(
+  g82_peaks %>% 
+    count(chr) %>% 
+    mutate(Sample = "G82"),
+  g82r_peaks %>% 
+    count(chr) %>% 
+    mutate(Sample = "G82R")
+)
+
+# Order chromosomes
+chr_order <- c(paste0("chr", 1:22), "chrX", "chrY", "chrM")
+chr_counts$chr <- factor(chr_counts$chr, levels = chr_order)
+
+# Create bar plot
+ggplot(chr_counts, aes(x = chr, y = n, fill = Sample)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+  scale_fill_manual(values = c("G82" = "#3498db", "G82R" = "#e74c3c")) +
+  labs(
+    title = "Peak Distribution Across Chromosomes",
+    x = "Chromosome",
+    y = "Number of Peaks"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  facet_wrap(~Sample, ncol = 1, scales = "free_y")
+```
+
+# Peak Overlap Analysis
+
+## Calculate Overlaps
+
+```{r peak-overlap}
+# Find overlapping peaks (reciprocal 50% overlap)
+overlaps <- findOverlaps(g82_gr, g82r_gr, minoverlap = 1)
+reciprocal_overlaps <- overlaps[
+  width(pintersect(g82_gr[queryHits(overlaps)], g82r_gr[subjectHits(overlaps)])) >= 
+  0.5 * pmin(width(g82_gr[queryHits(overlaps)]), width(g82r_gr[subjectHits(overlaps)]))
+]
+
+# Calculate overlap statistics
+n_g82_unique <- length(g82_gr) - length(unique(queryHits(reciprocal_overlaps)))
+n_g82r_unique <- length(g82r_gr) - length(unique(subjectHits(reciprocal_overlaps)))
+n_shared <- length(unique(queryHits(reciprocal_overlaps)))
+
+overlap_stats <- data.frame(
+  Category = c("G82 Unique", "Shared", "G82R Unique"),
+  Count = c(n_g82_unique, n_shared, n_g82r_unique),
+  Percentage = c(
+    n_g82_unique / length(g82_gr) * 100,
+    n_shared / length(g82_gr) * 100,
+    n_g82r_unique / length(g82r_gr) * 100
+  )
+)
+
+knitr::kable(overlap_stats, digits = 1, 
+             caption = "Peak Overlap Statistics")
+```
+
+## Visualize Overlap
+
+```{r venn-diagram, fig.width=8, fig.height=8}
+# Create Venn diagram using ggplot2
+library(ggforce)
+
+# Prepare data for Venn diagram
+venn_data <- data.frame(
+  x = c(-1, 1),
+  y = c(0, 0),
+  radius = c(1.5, 1.5),
+  sample = c("G82", "G82R")
+)
+
+# Create plot
+ggplot() +
+  geom_circle(data = venn_data, aes(x0 = x, y0 = y, r = radius, fill = sample),
+              alpha = 0.5, size = 1) +
+  scale_fill_manual(values = c("G82" = "#3498db", "G82R" = "#e74c3c")) +
+  annotate("text", x = -1.5, y = 0, label = n_g82_unique, size = 8) +
+  annotate("text", x = 0, y = 0, label = n_shared, size = 8) +
+  annotate("text", x = 1.5, y = 0, label = n_g82r_unique, size = 8) +
+  annotate("text", x = -1.5, y = -2, label = "G82 Unique", size = 5) +
+  annotate("text", x = 0, y = -2, label = "Shared", size = 5) +
+  annotate("text", x = 1.5, y = -2, label = "G82R Unique", size = 5) +
+  coord_fixed() +
+  theme_void() +
+  labs(title = "Peak Overlap Analysis",
+       subtitle = "Venn diagram showing unique and shared peaks") +
+  theme(legend.position = "bottom")
+```
+
+# Genomic Annotation
+
+## Annotate Peaks to Genomic Features
+
+```{r annotate-peaks}
+# Load annotation database
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+
+# Annotate peaks
+g82_anno <- annotatePeak(g82_gr, TxDb = txdb, 
+                        tssRegion = c(-3000, 3000),
+                        verbose = FALSE)
+
+g82r_anno <- annotatePeak(g82r_gr, TxDb = txdb,
+                         tssRegion = c(-3000, 3000),
+                         verbose = FALSE)
+
+# Extract annotation statistics
+g82_anno_stats <- as.data.frame(g82_anno@annoStat)
+g82r_anno_stats <- as.data.frame(g82r_anno@annoStat)
+
+# Combine for plotting
+anno_stats <- rbind(
+  g82_anno_stats %>% mutate(Sample = "G82"),
+  g82r_anno_stats %>% mutate(Sample = "G82R")
+)
+```
+
+## Visualize Genomic Distribution
+
+```{r genomic-distribution, fig.height=6}
+# Create grouped bar plot
+ggplot(anno_stats, aes(x = Feature, y = Frequency, fill = Sample)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+  scale_fill_manual(values = c("G82" = "#3498db", "G82R" = "#e74c3c")) +
+  coord_flip() +
+  labs(
+    title = "Distribution of Peaks Across Genomic Features",
+    x = "Genomic Feature",
+    y = "Percentage of Peaks (%)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## Distance to TSS
+
+```{r tss-distance, fig.height=6}
+# Get distance to TSS
+g82_tss <- as.data.frame(g82_anno)$distanceToTSS
+g82r_tss <- as.data.frame(g82r_anno)$distanceToTSS
+
+# Combine data
+tss_data <- rbind(
+  data.frame(Sample = "G82", Distance = g82_tss),
+  data.frame(Sample = "G82R", Distance = g82r_tss)
+)
+
+# Filter for reasonable range
+tss_data_filtered <- tss_data %>%
+  filter(abs(Distance) <= 50000)
+
+# Create density plot
+ggplot(tss_data_filtered, aes(x = Distance/1000, fill = Sample)) +
+  geom_density(alpha = 0.6) +
+  scale_fill_manual(values = c("G82" = "#3498db", "G82R" = "#e74c3c")) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+  labs(
+    title = "Distribution of Peaks Relative to TSS",
+    x = "Distance to TSS (kb)",
+    y = "Density"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Differential Peak Analysis
+
+## Identify Sample-Specific Peaks
+
+```{r differential-peaks}
+# Get unique peaks for each sample
+g82_unique_idx <- setdiff(1:length(g82_gr), queryHits(reciprocal_overlaps))
+g82r_unique_idx <- setdiff(1:length(g82r_gr), subjectHits(reciprocal_overlaps))
+
+g82_unique <- g82_gr[g82_unique_idx]
+g82r_unique <- g82r_gr[g82r_unique_idx]
+
+# Annotate unique peaks
+g82_unique_anno <- annotatePeak(g82_unique, TxDb = txdb,
+                               tssRegion = c(-3000, 3000),
+                               verbose = FALSE)
+
+g82r_unique_anno <- annotatePeak(g82r_unique, TxDb = txdb,
+                                tssRegion = c(-3000, 3000),
+                                verbose = FALSE)
+
+# Extract gene lists
+g82_unique_genes <- unique(as.data.frame(g82_unique_anno)$geneId)
+g82r_unique_genes <- unique(as.data.frame(g82r_unique_anno)$geneId)
+
+cat("Genes with G82-specific peaks:", length(g82_unique_genes), "\n")
+cat("Genes with G82R-specific peaks:", length(g82r_unique_genes), "\n")
+```
+
+## Top Differential Peaks
+
+```{r top-differential}
+# Get top peaks by signal
+top_g82_unique <- g82_peaks[g82_unique_idx,] %>%
+  arrange(desc(signalValue)) %>%
+  head(20) %>%
+  mutate(Sample = "G82-specific")
+
+top_g82r_unique <- g82r_peaks[g82r_unique_idx,] %>%
+  arrange(desc(signalValue)) %>%
+  head(20) %>%
+  mutate(Sample = "G82R-specific")
+
+# Combine and visualize
+top_differential <- rbind(top_g82_unique, top_g82r_unique)
+
+ggplot(top_differential, aes(x = reorder(paste(chr, start, sep = ":"), signalValue),
+                             y = signalValue, fill = Sample)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_fill_manual(values = c("G82-specific" = "#3498db", 
+                              "G82R-specific" = "#e74c3c")) +
+  labs(
+    title = "Top Sample-Specific Peaks by Signal",
+    x = "Peak Location",
+    y = "Signal Value"
+  ) +
+  theme(axis.text.y = element_text(size = 8))
+```
+
+# Functional Enrichment Analysis
+
+## GO Enrichment
+
+```{r go-enrichment}
+library(clusterProfiler)
+
+# Prepare gene lists for enrichment
+universe_genes <- unique(c(
+  as.data.frame(g82_anno)$geneId,
+  as.data.frame(g82r_anno)$geneId
+))
+
+# GO enrichment for G82R-specific peaks
+g82r_go <- enrichGO(
+  gene = g82r_unique_genes,
+  universe = universe_genes,
+  OrgDb = org.Hs.eg.db,
+  ont = "BP",
+  pAdjustMethod = "BH",
+  pvalueCutoff = 0.05,
+  qvalueCutoff = 0.1
+)
+
+# Plot top enriched terms
+if (nrow(g82r_go) > 0) {
+  dotplot(g82r_go, showCategory = 15) +
+    labs(title = "GO Enrichment: G82R-specific Peak Genes")
+}
+```
+
+# Summary Heatmap
+
+```{r summary-heatmap, fig.width=10, fig.height=8}
+# Create a summary matrix
+summary_matrix <- matrix(c(
+  length(g82_gr), length(g82r_gr),
+  mean(width(g82_gr)), mean(width(g82r_gr)),
+  mean(g82_peaks$score), mean(g82r_peaks$score),
+  mean(g82_peaks$signalValue), mean(g82r_peaks$signalValue),
+  n_g82_unique, n_g82r_unique
+), ncol = 2, byrow = TRUE)
+
+rownames(summary_matrix) <- c("Total Peaks", "Mean Width", "Mean Score", 
+                             "Mean Signal", "Unique Peaks")
+colnames(summary_matrix) <- c("G82", "G82R")
+
+# Normalize for visualization
+summary_norm <- t(scale(t(summary_matrix)))
+
+# Create heatmap
+Heatmap(
+  summary_norm,
+  name = "Z-score",
+  col = colorRamp2(c(-2, 0, 2), c("blue", "white", "red")),
+  cell_fun = function(j, i, x, y, width, height, fill) {
+    grid.text(sprintf("%.0f", summary_matrix[i, j]), x, y, 
+              gp = gpar(fontsize = 10))
+  },
+  column_title = "ATAC-seq Analysis Summary",
+  row_names_gp = gpar(fontsize = 12),
+  column_names_gp = gpar(fontsize = 12)
+)
+```
+
+# Export Results
+
+```{r export-results}
+# Create results directory
+dir.create("../results/tables", recursive = TRUE, showWarnings = FALSE)
+
+# Export peak lists with annotations
+write.csv(as.data.frame(g82_anno), 
+          "../results/tables/g82_peaks_annotated.csv", 
+          row.names = FALSE)
+
+write.csv(as.data.frame(g82r_anno), 
+          "../results/tables/g82r_peaks_annotated.csv", 
+          row.names = FALSE)
+
+# Export summary statistics
+write.csv(peak_stats, 
+          "../results/tables/peak_summary_statistics.csv", 
+          row.names = FALSE)
+
+# Export overlap statistics
+write.csv(overlap_stats, 
+          "../results/tables/peak_overlap_statistics.csv", 
+          row.names = FALSE)
+
+# Export differential gene lists
+write.table(g82_unique_genes, 
+           "../results/tables/g82_specific_genes.txt", 
+           row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+write.table(g82r_unique_genes, 
+           "../results/tables/g82r_specific_genes.txt", 
+           row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+cat("Results exported to ../results/tables/\n")
+```
+
+# Session Information
+
+```{r session-info}
+sessionInfo()
+```

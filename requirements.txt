@@ -1,0 +1,31 @@
+# ATAC-seq Analysis Python Requirements
+
+# Core scientific computing
+numpy>=1.21.0
+pandas>=1.3.0
+scipy>=1.7.0
+
+# Visualization
+matplotlib>=3.4.0
+seaborn>=0.11.0
+matplotlib-venn>=0.11.6
+plotly>=5.0.0
+
+# Genomics tools
+pybedtools>=0.9.0
+biopython>=1.79
+pyBigWig>=0.3.18
+
+# Data processing
+scikit-learn>=0.24.0
+statsmodels>=0.12.0
+
+# Utilities
+tqdm>=4.62.0
+click>=8.0.0
+pyyaml>=5.4.0
+
+# Jupyter support (optional)
+jupyter>=1.0.0
+ipykernel>=6.0.0
+nbformat>=5.1.0

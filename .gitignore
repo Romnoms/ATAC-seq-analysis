@@ -1,0 +1,73 @@
+# Data files
+data/*.bed
+data/*.bed.gz
+data/*.bam
+data/*.sam
+data/*.fastq
+data/*.fastq.gz
+data/*.fq
+data/*.fq.gz
+
+# Large data files
+*.tar
+*.tar.gz
+*.zip
+*.gz
+*.bz2
+
+# Results (can be regenerated)
+results/figures/*
+results/tables/*
+!results/figures/.gitkeep
+!results/tables/.gitkeep
+
+# R specific
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+*_cache/
+*_files/
+
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.out
+*.err
+
+# Credentials and sensitive data
+*.key
+*.pem
+config.ini
+secrets.yml
