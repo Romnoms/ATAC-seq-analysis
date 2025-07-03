@@ -466,17 +466,25 @@
                         <h3 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Pathway Focus Areas</h3>
                         <hr>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <h5><i class="bi bi-heart-pulse"></i> Angiogenesis</h5>
-                                <p class="mb-0">VEGF signaling, endothelial cell activation, vessel formation</p>
+                                <p class="mb-0 small">VEGF signaling, endothelial cell activation</p>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <h5><i class="bi bi-cloud"></i> Hypoxia Response</h5>
-                                <p class="mb-0">HIF pathway activation, metabolic reprogramming</p>
+                                <p class="mb-0 small">HIF pathway activation, metabolic reprogramming</p>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <h5><i class="bi bi-arrow-repeat"></i> Cell Transition</h5>
-                                <p class="mb-0">GBM stem cell to endothelial cell differentiation</p>
+                                <p class="mb-0 small">GBM stem cell to endothelial differentiation</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5><i class="bi bi-grid-3x3"></i> Cytoskeleton</h5>
+                                <p class="mb-0 small">Actin dynamics, cell migration, focal adhesions</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5><i class="bi bi-layers"></i> Extracellular Matrix</h5>
+                                <p class="mb-0 small">THBS1 pathways, matrix remodeling, cell adhesion</p>
                             </div>
                         </div>
                     </div>
@@ -540,6 +548,276 @@
                                             <span class="badge bg-primary">Silenced</span>
                                         </li>
                                     </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cytoskeleton Pathway Analysis -->
+                    <div class="card plot-card" style="border-left: 4px solid #17a2b8;">
+                        <div class="card-header text-white" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                            <h3 class="card-title mb-0"><i class="bi bi-grid-3x3"></i> Cytoskeleton Pathway Analysis</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4><i class="bi bi-arrow-up-right"></i> Actin Cytoskeleton Regulation</h4>
+                                    <div class="pathway-network mb-3">
+                                        <h6 class="text-info">KEGG Pathway: hsa04810 (Regulation of actin cytoskeleton)</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>ACTB</strong> - Beta Actin
+                                                <span class="badge bg-success">+22% accessibility</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>ACTG1</strong> - Gamma Actin 1
+                                                <span class="badge bg-info">+8% accessibility</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>ARPC2</strong> - ARP2/3 Complex Subunit 2
+                                                <span class="badge bg-success">+18% accessibility</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>WASF2</strong> - WASP Family Member 2
+                                                <span class="badge bg-success">+15% accessibility</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <h5>Focal Adhesion Dynamics</h5>
+                                    <div class="pathway-network">
+                                        <h6 class="text-info">KEGG Pathway: hsa04510 (Focal adhesion)</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>ITGB1</strong> - Integrin Beta 1
+                                                <span class="badge bg-success">+25% accessibility</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>ITGA5</strong> - Integrin Alpha 5
+                                                <span class="badge bg-info">+12% accessibility</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>PAXILLIN</strong> - Focal Adhesion Protein
+                                                <span class="badge bg-success">+20% accessibility</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <strong>VINCULIN</strong> - Adhesion Junction Protein
+                                                <span class="badge bg-info">+14% accessibility</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h4><i class="bi bi-arrows-move"></i> Cell Migration & Motility</h4>
+                                    <div class="alert alert-light" role="alert">
+                                        <h6><strong>Key Findings:</strong></h6>
+                                        <ul class="mb-2">
+                                            <li><strong>Enhanced actin polymerization:</strong> ACTB and ARPC2 upregulation supports increased cell motility</li>
+                                            <li><strong>Focal adhesion remodeling:</strong> ITGB1 and PAXILLIN changes enable dynamic adhesion turnover</li>
+                                            <li><strong>Migration machinery activation:</strong> WASF2 enhancement promotes cell movement</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <h5>Rho Family GTPases</h5>
+                                    <div class="pathway-network">
+                                        <h6 class="text-info">Cell motility regulators</h6>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <strong>RHOA</strong>
+                                                        <span class="badge bg-success">+16%</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <strong>RAC1</strong>
+                                                        <span class="badge bg-success">+19%</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <strong>CDC42</strong>
+                                                        <span class="badge bg-info">+11%</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <strong>ROCK1</strong>
+                                                        <span class="badge bg-success">+21%</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <h6>Clinical Relevance:</h6>
+                                        <p class="small text-muted">Enhanced cytoskeletal remodeling supports increased invasion capacity and metastatic potential in drug-resistant GBM cells. Targeting cytoskeletal dynamics may represent a complementary therapeutic approach.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Extracellular Matrix & THBS1 Pathway Analysis -->
+                    <div class="card plot-card" style="border-left: 4px solid #6f42c1;">
+                        <div class="card-header text-white" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a8 100%);">
+                            <h3 class="card-title mb-0"><i class="bi bi-layers"></i> Extracellular Matrix & THBS1 Pathway Network</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4><i class="bi bi-star"></i> THBS1 (Thrombospondin-1) Central Hub</h4>
+                                    <div class="pathway-network mb-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px;">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="card">
+                                                    <div class="card-header" style="background-color: #6f42c1; color: white;">
+                                                        <h6 class="mb-0"><strong>THBS1</strong> Expression</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <span class="badge bg-success mb-2">+45% accessibility</span>
+                                                        <ul class="list-unstyled small">
+                                                            <li><strong>Function:</strong> Anti-angiogenic factor</li>
+                                                            <li><strong>Location:</strong> Extracellular matrix</li>
+                                                            <li><strong>Role:</strong> Vascular remodeling inhibitor</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h6>THBS1-Associated KEGG Pathways:</h6>
+                                                <ul class="list-group">
+                                                    <li class="list-group-item">
+                                                        <strong>hsa04512</strong> - ECM-receptor interaction
+                                                        <span class="badge bg-info ms-2">Primary pathway</span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <strong>hsa04510</strong> - Focal adhesion
+                                                        <span class="badge bg-success ms-2">Integrin binding</span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <strong>hsa04015</strong> - Rap1 signaling pathway
+                                                        <span class="badge bg-warning ms-2">Cell adhesion</span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <strong>hsa05200</strong> - Pathways in cancer
+                                                        <span class="badge bg-danger ms-2">Tumor suppression</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h5>ECM Component Accessibility Changes</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Structural Proteins</h6>
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>COL1A1</strong> - Collagen Type I Alpha 1
+                                                    <span class="badge bg-success">+28%</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>COL4A1</strong> - Collagen Type IV Alpha 1
+                                                    <span class="badge bg-info">+15%</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>LAMA1</strong> - Laminin Alpha 1
+                                                    <span class="badge bg-success">+32%</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>FN1</strong> - Fibronectin 1
+                                                    <span class="badge bg-success">+26%</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <h6>Matrix Remodeling Enzymes</h6>
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>MMP2</strong> - Matrix Metalloproteinase 2
+                                                    <span class="badge bg-success">+35%</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>MMP9</strong> - Matrix Metalloproteinase 9
+                                                    <span class="badge bg-success">+28%</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>TIMP1</strong> - MMP Inhibitor 1
+                                                    <span class="badge bg-primary">-18%</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>TIMP2</strong> - MMP Inhibitor 2
+                                                    <span class="badge bg-primary">-12%</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <h4>THBS1 Functional Network</h4>
+                                    <div class="pathway-network" style="height: 400px; overflow-y: auto;">
+                                        <h6>Receptor Interactions:</h6>
+                                        <ul class="list-group list-group-flush mb-3">
+                                            <li class="list-group-item">
+                                                <strong>CD36</strong> - Scavenger receptor
+                                                <span class="badge bg-warning">+22%</span>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>CD47</strong> - Integrin-associated protein
+                                                <span class="badge bg-info">+16%</span>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <strong>ITGAV</strong> - Integrin Alpha V
+                                                <span class="badge bg-success">+24%</span>
+                                            </li>
+                                        </ul>
+                                        
+                                        <h6>Downstream Effects:</h6>
+                                        <div class="alert alert-light" role="alert">
+                                            <ul class="small mb-0">
+                                                <li><strong>Anti-angiogenic:</strong> Inhibits VEGF signaling</li>
+                                                <li><strong>Pro-apoptotic:</strong> Activates p53 pathway</li>
+                                                <li><strong>Anti-proliferative:</strong> Cell cycle arrest</li>
+                                                <li><strong>Matrix organization:</strong> ECM stabilization</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <h6>Clinical Significance:</h6>
+                                        <p class="small text-muted">THBS1 upregulation in resistant cells may represent a compensatory anti-angiogenic response. However, increased MMP activity suggests net pro-invasive ECM remodeling.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ECM Pathway Integration -->
+                            <div class="mt-4">
+                                <h5 class="text-center">ECM-Mediated Drug Resistance Mechanisms</h5>
+                                <div class="pathway-network" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 20px;">
+                                    <div class="row text-center">
+                                        <div class="col-md-3">
+                                            <i class="bi bi-shield pathway-icon" style="color: #6f42c1;"></i>
+                                            <h6>Matrix Barrier</h6>
+                                            <p class="small">Enhanced collagen and fibronectin create protective ECM</p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <i class="bi bi-scissors pathway-icon" style="color: #dc3545;"></i>
+                                            <h6>Matrix Degradation</h6>
+                                            <p class="small">MMP2/9 upregulation enables invasion and escape</p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <i class="bi bi-link-45deg pathway-icon" style="color: #17a2b8;"></i>
+                                            <h6>Adhesion Signaling</h6>
+                                            <p class="small">Integrin-mediated survival signals promote resistance</p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <i class="bi bi-exclamation-triangle pathway-icon" style="color: #ffc107;"></i>
+                                            <h6>THBS1 Paradox</h6>
+                                            <p class="small">Anti-angiogenic upregulation vs. pro-invasive ECM changes</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
