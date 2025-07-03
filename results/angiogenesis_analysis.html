@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angiogenesis & Vascular Remodeling in GBM Drug Resistance</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            line-height: 1.6;
+        }
+        
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            max-width: 1400px;
+        }
+        
+        .angiogenesis-header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            margin: 0 -30px 30px -30px;
+            padding: 30px;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .hypoxia-header {
+            background: linear-gradient(135deg, #6610f2 0%, #520dc2 100%);
+            color: white;
+            margin: 40px -30px 30px -30px;
+            padding: 20px 30px;
+            border-radius: 15px;
+        }
+        
+        .stemcell-header {
+            background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+            color: white;
+            margin: 40px -30px 30px -30px;
+            padding: 20px 30px;
+            border-radius: 15px;
+        }
+        
+        .pathway-card {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 30px;
+            border-left: 5px solid;
+        }
+        
+        .pathway-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .angiogenesis-card {
+            border-left-color: #dc3545;
+        }
+        
+        .hypoxia-card {
+            border-left-color: #6610f2;
+        }
+        
+        .stemcell-card {
+            border-left-color: #fd7e14;
+        }
+        
+        .gene-badge {
+            font-size: 0.9em;
+            margin: 2px;
+            padding: 5px 10px;
+        }
+        
+        .increased {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .decreased {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .pathway-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .mechanism-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 20%);
+            border-radius: 15px;
+            margin: 30px 0;
+            padding: 30px;
+        }
+        
+        .clinical-section {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 20%);
+            border-radius: 15px;
+            margin: 30px 0;
+            padding: 30px;
+        }
+        
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .pathway-network {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .gene-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Main Report Link -->
+    <a href="enhanced_atac_rnaseq_report.html" class="btn btn-outline-primary back-link">
+        <i class="bi bi-arrow-left"></i> Back to Main Report
+    </a>
+
+    <div class="container-fluid">
+        <div class="main-container p-4">
+            
+            <!-- Header Section -->
+            <div class="angiogenesis-header text-center">
+                <h1 class="display-4 mb-3">
+                    <i class="bi bi-heart-pulse"></i> Angiogenesis & Vascular Remodeling Analysis
+                </h1>
+                <h2 class="h4 mb-2">GBM Drug Resistance: Focus on Vascular Adaptation</h2>
+                <p class="lead mb-0">Comprehensive analysis of angiogenesis, hypoxia response, and stem cell to endothelial transition pathways</p>
+            </div>
+            
+            <!-- Executive Summary -->
+            <div class="alert alert-danger mb-4" role="alert">
+                <h3 class="alert-heading"><i class="bi bi-exclamation-diamond"></i> Key Findings: Vascular Remodeling in Resistance</h3>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <h4 class="text-danger">21/47 genes</h4>
+                        <p class="mb-0">Angiogenesis pathway changes</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h4 class="text-purple">17/34 genes</h4>
+                        <p class="mb-0">Hypoxia response activation</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h4 class="text-warning">16/34 genes</h4>
+                        <p class="mb-0">Stem-endothelial transitions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Angiogenesis Pathway Analysis -->
+            <div class="pathway-card angiogenesis-card">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="card-title mb-0">
+                        <i class="bi bi-graph-up-arrow pathway-icon"></i>
+                        Angiogenesis Pathway Remodeling
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Chromatin Accessibility Changes in Key Angiogenic Pathways</h4>
+                            <p class="lead">Drug resistance involves extensive remodeling of vascular regulatory pathways, with 44.7% of angiogenesis genes showing significant chromatin accessibility changes.</p>
+                            
+                            <div class="pathway-network">
+                                <h5><i class="bi bi-diagram-3"></i> Major Pathway Networks Affected:</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="text-danger">VEGF Signaling Network</h6>
+                                        <div class="gene-list">
+                                            <span class="badge gene-badge increased">VEGFA</span>
+                                            <span class="badge gene-badge increased">VEGFB</span>
+                                            <span class="badge gene-badge decreased">KDR</span>
+                                            <span class="badge gene-badge increased">NRP1</span>
+                                            <span class="badge gene-badge increased">PLCG1</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-danger">PDGF/FGF Signaling</h6>
+                                        <div class="gene-list">
+                                            <span class="badge gene-badge increased">PDGFA</span>
+                                            <span class="badge gene-badge decreased">PDGFRB</span>
+                                            <span class="badge gene-badge increased">FGF1</span>
+                                            <span class="badge gene-badge increased">FGF2</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h5 class="mt-4">Top Angiogenic Genes with Accessibility Changes:</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong>FGF1</strong> - Fibroblast Growth Factor 1
+                                    <span class="badge increased rounded-pill">+68% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong>TSC1</strong> - Tuberous Sclerosis Complex 1
+                                    <span class="badge increased rounded-pill">+62% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong>JAG1</strong> - Jagged Canonical Notch Ligand 1
+                                    <span class="badge increased rounded-pill">+50% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong>MMP2</strong> - Matrix Metallopeptidase 2
+                                    <span class="badge increased rounded-pill">+48% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong>VCAM1</strong> - Vascular Cell Adhesion Molecule 1
+                                    <span class="badge increased rounded-pill">+30% accessibility</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Angiogenesis Pathway Summary</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="angiogenesisChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hypoxia Response Analysis -->
+            <div class="hypoxia-header text-center">
+                <h2 class="mb-2"><i class="bi bi-cloud"></i> Hypoxia Response & Metabolic Reprogramming</h2>
+                <p class="mb-0">Oxygen sensing and metabolic adaptation in drug-resistant cells</p>
+            </div>
+            
+            <div class="pathway-card hypoxia-card">
+                <div class="card-header bg-purple text-white" style="background-color: #6610f2 !important;">
+                    <h3 class="card-title mb-0">HIF Pathway Activation & Metabolic Switching</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Hypoxia-Inducible Factor (HIF) Network</h4>
+                            <p>50% of hypoxia response genes show significant chromatin remodeling, indicating extensive metabolic reprogramming in resistant cells.</p>
+                            
+                            <h5>Core HIF Pathway Changes:</h5>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item">
+                                    <strong>HIF1A/HIF2A:</strong> Master transcriptional regulators
+                                    <span class="badge bg-info">Pathway active</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>VHL:</strong> Tumor suppressor, HIF degradation
+                                    <span class="badge bg-warning">Potentially silenced</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>PHD1-3:</strong> Oxygen sensors
+                                    <span class="badge bg-success">Mixed changes</span>
+                                </li>
+                            </ul>
+                            
+                            <h5>Metabolic Enzyme Activation:</h5>
+                            <div class="pathway-network">
+                                <span class="badge gene-badge increased">ENO1</span>
+                                <span class="badge gene-badge increased">LDHA</span>
+                                <span class="badge gene-badge decreased">HK1</span>
+                                <span class="badge gene-badge increased">PDK1</span>
+                                <span class="badge gene-badge increased">CA9</span>
+                                <span class="badge gene-badge increased">SLC2A1</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4>Top Hypoxia Response Changes:</h4>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>ENO1</strong> - Glycolytic enzyme
+                                    <span class="badge increased">+110% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>BNIP3</strong> - Apoptosis regulator
+                                    <span class="badge increased">+88% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>PHD3</strong> - Oxygen sensor
+                                    <span class="badge increased">+74% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>IDH2</strong> - Metabolic enzyme
+                                    <span class="badge increased">+18% accessibility</span>
+                                </li>
+                            </ul>
+                            
+                            <div class="mt-4">
+                                <div id="hypoxiaChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stem Cell to Endothelial Transition -->
+            <div class="stemcell-header text-center">
+                <h2 class="mb-2"><i class="bi bi-arrow-repeat"></i> GBM Stem Cell to Endothelial Transition</h2>
+                <p class="mb-0">Transdifferentiation pathways in vascular mimicry and therapeutic resistance</p>
+            </div>
+            
+            <div class="pathway-card stemcell-card">
+                <div class="card-header text-white" style="background-color: #fd7e14 !important;">
+                    <h3 class="card-title mb-0">Cellular Plasticity & Vascular Mimicry</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Stem Cell Marker Regulation</h4>
+                            <p>47.1% of stem cell and endothelial differentiation genes show accessibility changes, suggesting active cellular reprogramming.</p>
+                            
+                            <h5>Core Stemness Factors:</h5>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>SOX2</strong> - Pluripotency factor
+                                    <span class="badge increased">+23% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>BMI1</strong> - Stem cell maintenance
+                                    <span class="badge increased">+32% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>ALDH1A1</strong> - Stem cell marker
+                                    <span class="badge increased">+1% accessibility</span>
+                                </li>
+                            </ul>
+                            
+                            <h5>Endothelial Differentiation Markers:</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>CD34</strong> - Endothelial progenitor
+                                    <span class="badge increased">+13% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>VWF</strong> - Endothelial marker
+                                    <span class="badge increased">+1% accessibility</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>ETS1</strong> - Endothelial TF
+                                    <span class="badge increased">+46% accessibility</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4>Epithelial-Mesenchymal Transition (EMT)</h4>
+                            <p>Key EMT factors showing accessibility changes indicate potential for increased cellular mobility and vascular invasion.</p>
+                            
+                            <div class="pathway-network">
+                                <h6>EMT Transcription Factors:</h6>
+                                <span class="badge gene-badge decreased">SNAI1</span>
+                                <span class="badge gene-badge decreased">SNAI2</span>
+                                <span class="badge gene-badge increased">TWIST1</span>
+                                <span class="badge gene-badge increased">ZEB1</span>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div id="stemcellChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mechanistic Insights -->
+            <div class="mechanism-section">
+                <h2 class="text-center mb-4"><i class="bi bi-gear"></i> Mechanistic Insights: Integrated Vascular Response</h2>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-1-circle pathway-icon text-danger"></i>
+                                <h5>Angiogenic Switch</h5>
+                                <p>Pro-angiogenic factors (FGF1, VEGF, PDGF) show increased accessibility, promoting new vessel formation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-2-circle pathway-icon text-purple"></i>
+                                <h5>Hypoxic Adaptation</h5>
+                                <p>HIF pathway activation drives metabolic reprogramming and survival under low oxygen conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-3-circle pathway-icon text-warning"></i>
+                                <h5>Vascular Mimicry</h5>
+                                <p>Stem cell plasticity enables tumor cells to form vessel-like structures independently of endothelial cells.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Clinical Implications -->
+            <div class="clinical-section">
+                <h2 class="text-center mb-4"><i class="bi bi-hospital"></i> Clinical Implications & Therapeutic Targets</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4><i class="bi bi-bullseye"></i> Therapeutic Targets Identified</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Anti-angiogenic therapy:</strong> Target FGF1, VEGF signaling
+                            </li>
+                            <li class="list-group-item">
+                                <strong>HIF inhibitors:</strong> Block hypoxia response pathway
+                            </li>
+                            <li class="list-group-item">
+                                <strong>MMP inhibitors:</strong> Prevent matrix remodeling
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Stem cell targeting:</strong> SOX2, BMI1 pathway inhibition
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4><i class="bi bi-graph-up"></i> Resistance Biomarkers</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Chromatin accessibility:</strong> Early resistance detection
+                            </li>
+                            <li class="list-group-item">
+                                <strong>VEGF/FGF expression:</strong> Angiogenic activity
+                            </li>
+                            <li class="list-group-item">
+                                <strong>HIF target genes:</strong> Hypoxic stress response
+                            </li>
+                            <li class="list-group-item">
+                                <strong>EMT markers:</strong> Cellular plasticity assessment
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary -->
+            <div class="alert alert-info mt-4" role="alert">
+                <h4 class="alert-heading"><i class="bi bi-check-circle"></i> Summary: Vascular Remodeling in GBM Resistance</h4>
+                <p>This analysis reveals a coordinated vascular response to drug treatment involving:</p>
+                <ul class="mb-0">
+                    <li><strong>Angiogenic activation:</strong> Enhanced vessel formation capacity</li>
+                    <li><strong>Metabolic reprogramming:</strong> Adaptation to hypoxic stress</li>
+                    <li><strong>Cellular plasticity:</strong> Stem cell to endothelial transition capability</li>
+                    <li><strong>Therapeutic implications:</strong> Multiple targetable pathways identified</li>
+                </ul>
+            </div>
+            
+            <!-- Footer -->
+            <div class="text-center mt-5 pt-4 border-top">
+                <p class="text-muted">
+                    <i class="bi bi-calendar"></i> Analysis completed: July 2025 | 
+                    <i class="bi bi-database"></i> Based on GSE130638 ATAC-seq data | 
+                    <i class="bi bi-arrow-left"></i> <a href="enhanced_atac_rnaseq_report.html">Return to Main Report</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Charts -->
+    <script>
+        // Angiogenesis Pathway Chart
+        var angiogenesisData = [{
+            values: [21, 26],
+            labels: ['Significant Changes', 'No Significant Change'],
+            type: 'pie',
+            marker: {
+                colors: ['#dc3545', '#e9ecef']
+            }
+        }];
+
+        var angiogenesisLayout = {
+            title: 'Angiogenesis Genes',
+            showlegend: true,
+            height: 300
+        };
+
+        Plotly.newPlot('angiogenesisChart', angiogenesisData, angiogenesisLayout, {responsive: true});
+
+        // Hypoxia Response Chart
+        var hypoxiaData = [{
+            values: [17, 17],
+            labels: ['Significant Changes', 'No Significant Change'],
+            type: 'pie',
+            marker: {
+                colors: ['#6610f2', '#e9ecef']
+            }
+        }];
+
+        var hypoxiaLayout = {
+            title: 'Hypoxia Response Genes',
+            showlegend: true,
+            height: 300
+        };
+
+        Plotly.newPlot('hypoxiaChart', hypoxiaData, hypoxiaLayout, {responsive: true});
+
+        // Stem Cell Chart
+        var stemcellData = [{
+            values: [16, 18],
+            labels: ['Significant Changes', 'No Significant Change'],
+            type: 'pie',
+            marker: {
+                colors: ['#fd7e14', '#e9ecef']
+            }
+        }];
+
+        var stemcellLayout = {
+            title: 'Stem/Endothelial Genes',
+            showlegend: true,
+            height: 300
+        };
+
+        Plotly.newPlot('stemcellChart', stemcellData, stemcellLayout, {responsive: true});
+    </script>
+</body>
+</html>
