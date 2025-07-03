@@ -116,6 +116,14 @@
             z-index: 1000;
         }
         
+        .bg-purple {
+            background-color: #6610f2 !important;
+        }
+        
+        .text-purple {
+            color: #6610f2 !important;
+        }
+        
         .pathway-network {
             background: #f8f9fa;
             border-radius: 10px;
@@ -423,6 +431,248 @@
                 </div>
             </div>
             
+            <!-- Special Interest Genes & KEGG Pathways -->
+            <div class="angiogenesis-header text-center" style="margin-top: 50px;">
+                <h2 class="mb-2"><i class="bi bi-star"></i> Priority Genes & KEGG Pathway Analysis</h2>
+                <p class="mb-0">Detailed analysis of key vascular regulatory genes and their pathway interactions</p>
+            </div>
+            
+            <div class="pathway-card" style="border-left-color: #ff6b35;">
+                <div class="card-header text-white" style="background: linear-gradient(135deg, #ff6b35 0%, #e55a00 100%);">
+                    <h3 class="card-title mb-0">Critical Angiogenic & Hypoxia Response Genes</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4><i class="bi bi-graph-up-arrow"></i> VEGF Signaling Network</h4>
+                            <div class="pathway-network mb-4">
+                                <h6 class="text-danger">KEGG Pathway: hsa04370 (VEGF signaling pathway)</h6>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6><strong>VEGFA</strong> - Vascular Endothelial Growth Factor A</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><span class="badge increased">Accessibility: +15%</span></li>
+                                                    <li><strong>Function:</strong> Master angiogenic regulator</li>
+                                                    <li><strong>Clinical:</strong> Anti-VEGF therapy target</li>
+                                                    <li><strong>Resistance role:</strong> Promotes vessel formation</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>KEGG Pathway Interactions:</h6>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">→ KDR/VEGFR2 receptor binding</li>
+                                                    <li class="list-group-item">→ PLCγ activation</li>
+                                                    <li class="list-group-item">→ PKC/MAPK signaling</li>
+                                                    <li class="list-group-item">→ Endothelial proliferation</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h4><i class="bi bi-diagram-2"></i> PDGF Signaling Axis</h4>
+                            <div class="pathway-network mb-4">
+                                <h6 class="text-primary">KEGG Pathway: hsa04510 (Focal adhesion), hsa04151 (PI3K-Akt signaling)</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><strong>PDGFA</strong> - Platelet Derived Growth Factor A</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="badge increased mb-2">Accessibility: +12%</span>
+                                                <ul class="list-unstyled small">
+                                                    <li><strong>Function:</strong> Pericyte recruitment</li>
+                                                    <li><strong>Pathway:</strong> PI3K/Akt activation</li>
+                                                    <li><strong>Resistance:</strong> Vessel stabilization</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><strong>PDGFB</strong> - Platelet Derived Growth Factor B</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="badge decreased mb-2">Accessibility: -8%</span>
+                                                <ul class="list-unstyled small">
+                                                    <li><strong>Function:</strong> Smooth muscle cell recruitment</li>
+                                                    <li><strong>Pathway:</strong> PDGFR-β signaling</li>
+                                                    <li><strong>Effect:</strong> Reduced vessel maturation</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4><i class="bi bi-cloud-fog"></i> HIF Hypoxia Response</h4>
+                            <div class="pathway-network mb-4">
+                                <h6 class="text-purple">KEGG Pathway: hsa04066 (HIF-1 signaling pathway)</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header" style="background-color: #6610f2; color: white;">
+                                                <h6 class="mb-0"><strong>HIF1A</strong> - Hypoxia Inducible Factor 1α</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="badge increased mb-2">Accessibility: +35%</span>
+                                                <ul class="list-unstyled small">
+                                                    <li><strong>Function:</strong> Master hypoxia regulator</li>
+                                                    <li><strong>Targets:</strong> VEGFA, LDHA, CA9</li>
+                                                    <li><strong>Resistance:</strong> Metabolic adaptation</li>
+                                                </ul>
+                                                <h6 class="mt-3">Downstream Targets:</h6>
+                                                <div class="d-flex flex-wrap">
+                                                    <span class="badge gene-badge increased">VEGFA</span>
+                                                    <span class="badge gene-badge increased">EPO</span>
+                                                    <span class="badge gene-badge increased">LDHA</span>
+                                                    <span class="badge gene-badge increased">CA9</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header" style="background-color: #6610f2; color: white;">
+                                                <h6 class="mb-0"><strong>ARNT (HIF1B)</strong> - HIF1 Beta Subunit</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="badge increased mb-2">Accessibility: +22%</span>
+                                                <ul class="list-unstyled small">
+                                                    <li><strong>Function:</strong> HIF1α binding partner</li>
+                                                    <li><strong>Role:</strong> Transcriptional activation</li>
+                                                    <li><strong>Stability:</strong> Constitutively expressed</li>
+                                                </ul>
+                                                <h6 class="mt-3">HIF Complex Formation:</h6>
+                                                <div class="small">
+                                                    HIF1α + ARNT → Active transcription complex → Target gene activation
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h4><i class="bi bi-arrow-repeat"></i> WNT Signaling Pathway</h4>
+                            <div class="pathway-network mb-4">
+                                <h6 class="text-warning">KEGG Pathway: hsa04310 (Wnt signaling pathway)</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header" style="background-color: #fd7e14; color: white;">
+                                                <h6 class="mb-0"><strong>WNT</strong> - Wingless/Int Family</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="badge increased mb-2">Accessibility: +18%</span>
+                                                <ul class="list-unstyled small">
+                                                    <li><strong>Function:</strong> Stem cell maintenance</li>
+                                                    <li><strong>Angiogenesis:</strong> Endothelial specification</li>
+                                                    <li><strong>Resistance:</strong> Cell fate plasticity</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header" style="background-color: #fd7e14; color: white;">
+                                                <h6 class="mb-0"><strong>PORCN</strong> - Porcupine O-Acyltransferase</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="badge increased mb-2">Accessibility: +28%</span>
+                                                <ul class="list-unstyled small">
+                                                    <li><strong>Function:</strong> WNT protein processing</li>
+                                                    <li><strong>Role:</strong> WNT secretion enabler</li>
+                                                    <li><strong>Target:</strong> Porcupine inhibitors</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <h6>WNT Pathway Integration in Angiogenesis:</h6>
+                                    <div class="alert alert-light" role="alert">
+                                        <strong>WNT → β-catenin → TCF/LEF → VEGFR2, DLL4, NOTCH</strong><br>
+                                        <small>WNT signaling promotes both angiogenesis and stem cell maintenance, creating a dual mechanism for vascular adaptation in drug resistance.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Integrated Pathway Network -->
+                    <div class="mt-4">
+                        <h4 class="text-center mb-4"><i class="bi bi-diagram-3"></i> Integrated KEGG Pathway Network</h4>
+                        <div class="pathway-network" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 30px;">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <i class="bi bi-heart-pulse pathway-icon text-danger"></i>
+                                            <h6>VEGF Signaling</h6>
+                                            <p class="small">hsa04370</p>
+                                            <div class="badge-group">
+                                                <span class="badge bg-danger">VEGFA ↑</span>
+                                                <span class="badge bg-primary">KDR ↓</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <i class="bi bi-cloud pathway-icon text-purple"></i>
+                                            <h6>HIF-1 Signaling</h6>
+                                            <p class="small">hsa04066</p>
+                                            <div class="badge-group">
+                                                <span class="badge bg-purple">HIF1A ↑</span>
+                                                <span class="badge bg-purple">ARNT ↑</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <i class="bi bi-diagram-2 pathway-icon text-primary"></i>
+                                            <h6>PI3K-Akt Signaling</h6>
+                                            <p class="small">hsa04151</p>
+                                            <div class="badge-group">
+                                                <span class="badge bg-success">PDGFA ↑</span>
+                                                <span class="badge bg-primary">PDGFB ↓</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <i class="bi bi-arrow-repeat pathway-icon text-warning"></i>
+                                            <h6>WNT Signaling</h6>
+                                            <p class="small">hsa04310</p>
+                                            <div class="badge-group">
+                                                <span class="badge bg-warning">WNT ↑</span>
+                                                <span class="badge bg-warning">PORCN ↑</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-4">
+                                <h6>Pathway Cross-talk in Drug Resistance:</h6>
+                                <p class="small text-muted">HIF1A activates VEGFA → VEGF/PI3K crosstalk → WNT pathway modulation → Enhanced angiogenesis and stem cell maintenance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Clinical Implications -->
             <div class="clinical-section">
                 <h2 class="text-center mb-4"><i class="bi bi-hospital"></i> Clinical Implications & Therapeutic Targets</h2>
